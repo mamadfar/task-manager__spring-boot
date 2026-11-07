@@ -1,9 +1,9 @@
 package com.leetjourney.taskmanager.controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leetjourney.taskmanager.entity.Task;
+import com.leetjourney.taskmanager.repository.TaskRepository;
 
 
 
@@ -22,61 +23,48 @@ import com.leetjourney.taskmanager.entity.Task;
 @RequestMapping("/api/${api.version}/tasks")
 public class TaskController {
 
-    // Temporary in-memory list of tasks
-    private List<Task> tasks = new ArrayList<>();
-    private Long nextId = 1L;
+    private final TaskRepository taskRepository;
+
+    //? Constructor Injection
+    // @Autowired // Spring Boot annotation to inject the dependency automatically. Not needed because Spring Boot will automatically inject the dependency.
+    public TaskController(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     @GetMapping
     public List<Task> getAllTasks() {
-        return tasks;
+        return taskRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id) {
-        return tasks.stream().filter(task -> task.getId().equals(id)).findFirst().orElse(null);
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+        return taskRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
     
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        task.setId(nextId++);
-        task.setCreatedAt(LocalDateTime.now());
-        task.setCompleted(false);
-        tasks.add(task);
-
-        return task;
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+        Task savedTask = taskRepository.save(task);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
 
     @PutMapping("/{id}")
-    public Task updateTask (@PathVariable Long id, @RequestBody Task updatedTask) {
+    public ResponseEntity<Task> updateTask (@PathVariable Long id, @RequestBody Task updatedTask) {
 
-        //? Way 1: Stream API
-        Task existingTask = tasks.stream().filter(task -> task.getId().equals(id)).findFirst().orElse(null);
-
-        if (existingTask != null) {
-            existingTask.setTitle(updatedTask.getTitle() != null ? updatedTask.getTitle() : existingTask.getTitle());
-            existingTask.setDescription(updatedTask.getDescription() != null ? updatedTask.getDescription() : existingTask.getDescription());
-            existingTask.setCompleted(updatedTask.getCompleted() != null ? updatedTask.getCompleted() : existingTask.getCompleted());
-            tasks.set(tasks.indexOf(existingTask), existingTask);
-            return existingTask;
-        }
-        
-        return null;
-
-        //? Way 2: For-Each Loop
-        // for (Task task : tasks) {
-        //     if (task.getId().equals(id)) {
-        //         updatedTask.setId(id);
-        //         updatedTask.setCreatedAt(task.getCreatedAt());
-        //         tasks.set(tasks.indexOf(task), updatedTask);
-        //         return updatedTask
-        //     }
-        // }
-        // return null;
+        return taskRepository.findById(id).map(task -> {
+            task.setTitle(updatedTask.getTitle());
+            task.setDescription(updatedTask.getDescription());
+            task.setCompleted(updatedTask.isCompleted());
+            Task savedTask = taskRepository.save(task);
+            return ResponseEntity.ok(savedTask);
+        }).orElse(ResponseEntity.notFound().build());
     }
     
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
-        tasks.removeIf(task -> task.getId().equals(id));
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        return taskRepository.findById(id).map(task -> {
+            taskRepository.delete(task);
+            return ResponseEntity.ok().<Void>build();
+        }).orElse(ResponseEntity.notFound().build());
     }
 }

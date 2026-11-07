@@ -32,8 +32,8 @@ public class Task {
     @Column(length=1000)
     private String description;
 
-    @Column(nullable=false)
-    private Boolean completed = false;
+    @Column(nullable = false)
+    private boolean completed = false;
 
     @Column(name="created_at", nullable=false, updatable=false)
     private LocalDateTime createdAt;
