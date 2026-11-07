@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "api.version",
+      "type": "java.lang.String",
+      "description": "Version segment of the public API path. Override with the API_VERSION environment variable.",
+      "defaultValue": "v1"
+    }
+  ]
+}
