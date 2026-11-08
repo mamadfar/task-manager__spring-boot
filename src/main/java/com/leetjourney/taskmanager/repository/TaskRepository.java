@@ -1,6 +1,10 @@
 package com.leetjourney.taskmanager.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.leetjourney.taskmanager.entity.Task;
 
@@ -9,4 +13,13 @@ import com.leetjourney.taskmanager.entity.Task;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     //? Spring Data JPA will automatically generate the implementation of this interface.
     //? This is a good practice to avoid writing the implementation of the interface.
+
+    // SELECT * FROM tasks WHERE completed = :completed
+    List<Task> findByCompleted(boolean completed);
+
+    List<Task> findByTitleContainingIgnoreCase(String title);
+
+    //? JPQL (Java Persistence Query Language) mainly used for complex queries. Task is the entity name
+    @Query("SELECT t FROM Task t WHERE t.completed = :completed")
+    List<Task> findTasksByCompletionStatus(@Param("completed") boolean completed);
 }
