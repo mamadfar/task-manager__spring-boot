@@ -3,6 +3,8 @@ package com.leetjourney.taskmanager.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.leetjourney.taskmanager.dto.TaskRequest;
@@ -28,6 +30,10 @@ public class TaskService {
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
+    }
+
+    public Page<Task> getAllTasks(Pageable pageable) {
+        return taskRepository.findAll(pageable);
     }
 
     public TaskResponse getTaskById(Long id) {
@@ -61,13 +67,18 @@ public class TaskService {
     }
 
     public List<TaskResponse> getTasksByCompletionStatus(boolean status) {
-        List<Task> tasks = taskRepository.findByCompleted(status);
-        return tasks.stream().map(taskMapper::toResponse).collect(Collectors.toList());
+        final List<Task> completedTasks = taskRepository.findByCompleted(status);
+        return completedTasks.stream().map(taskMapper::toResponse).toList();
+    }
+
+    public Page<TaskResponse> getTasksByCompletionStatus(boolean status, Pageable pageable) {
+        final Page<Task> completedTasks = taskRepository.findByCompleted(status, pageable);
+        return completedTasks.map(taskMapper::toResponse);
     }
 
     public List<TaskResponse> searchTasksByTitle(String title) {
-        List<Task> tasks = taskRepository.findByTitleContainingIgnoreCase(title);
-        return tasks.stream().map(taskMapper::toResponse).collect(Collectors.toList());
+        final List<Task> tasks = taskRepository.findByTitleContainingIgnoreCase(title);
+        return tasks.stream().map(taskMapper::toResponse).toList();
     }
     
 }
