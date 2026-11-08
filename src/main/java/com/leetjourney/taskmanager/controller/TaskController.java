@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.leetjourney.taskmanager.dto.TaskRequest;
+import com.leetjourney.taskmanager.dto.TaskResponse;
 import com.leetjourney.taskmanager.entity.Task;
 import com.leetjourney.taskmanager.service.TaskService;
 
@@ -37,19 +39,19 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id) {
+    public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task) {
-        Task savedTask = taskService.createTask(task);
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest taskRequest) {
+        TaskResponse savedTask = taskService.createTask(taskRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @Valid @RequestBody Task updatedTask) {
-        return taskService.updateTask(id, updatedTask);
+    public TaskResponse updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequest updatedTaskRequest) {
+        return taskService.updateTask(id, updatedTaskRequest);
     }
 
     @DeleteMapping("/{id}")
@@ -59,12 +61,12 @@ public class TaskController {
     }
 
     @GetMapping("/completed/{status}")
-    public List<Task> getTasksByCompletions(@PathVariable boolean status) {
+    public List<TaskResponse> getTasksByCompletions(@PathVariable boolean status) {
         return taskService.getTasksByCompletionStatus(status);
     }
 
     @GetMapping("/search")
-    public List<Task> searchTasksByTitle(@RequestParam String title) {
+    public List<TaskResponse> searchTasksByTitle(@RequestParam String title) {
         return taskService.searchTasksByTitle(title);
     }
 

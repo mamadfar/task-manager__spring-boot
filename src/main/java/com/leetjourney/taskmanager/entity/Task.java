@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity // JPA annotation to mark the class as a JPA entity and it's used to map the class to a database table.
 @Table(name = "tasks") // JPA annotation to map the class to a database table.
 @Data // Lombok annotation to generate getter, setter, toString, equals, and hashCode methods.
+@Builder // Lombok annotation to generate a builder for the class. A builder is a way to create an object with a builder pattern.
 @NoArgsConstructor // Lombok annotation to generate a no-args constructor.
 @AllArgsConstructor // Lombok annotation to generate a constructor with all fields.
 public class Task {
@@ -28,17 +30,14 @@ public class Task {
     @GeneratedValue(strategy= GenerationType.IDENTITY) // JPA annotation to generate a primary key value.
     private Long id;
 
-    @NotBlank(message = "Title is required")
-    @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
     @Column(nullable=false)
     private String title;
 
-    @Size(min = 2, max = 500, message = "Description must be between 2 and 500 characters")
     @Column(length=500)
     private String description;
 
     @Column(nullable = false)
-    private boolean completed = false;
+    private Boolean completed;
 
     @Column(name="created_at", nullable=false, updatable=false)
     private LocalDateTime createdAt;
