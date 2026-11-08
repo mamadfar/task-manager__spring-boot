@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leetjourney.taskmanager.entity.Task;
-import com.leetjourney.taskmanager.services.TaskService;
+import com.leetjourney.taskmanager.service.TaskService;
 
 @RestController // Spring Boot annotation to mark the class as a REST controller and it combines @Controller and @ResponseBody.
 @RequestMapping("/api/${api.version}/tasks")
@@ -35,8 +35,8 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public Task getTaskById(@PathVariable Long id) {
+        return taskService.getTaskById(id);
     }
 
     @PostMapping
@@ -46,15 +46,14 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
-        return taskService.updateTask(id, updatedTask).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
+        return taskService.updateTask(id, updatedTask);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        return taskService.deleteTask(id)
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.notFound().build();
+        taskService.deleteTask(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/completed/{status}")

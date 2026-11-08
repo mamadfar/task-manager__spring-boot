@@ -1,11 +1,11 @@
-package com.leetjourney.taskmanager.services;
+package com.leetjourney.taskmanager.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.leetjourney.taskmanager.entity.Task;
+import com.leetjourney.taskmanager.exception.TaskNotFoundException;
 import com.leetjourney.taskmanager.repository.TaskRepository;
 
 import jakarta.transaction.Transactional;
@@ -24,28 +24,25 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);
+    public Task getTaskById(Long id) {
+        return taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     public Task createTask(Task task) {
         return taskRepository.save(task);
     }
 
-    public Optional<Task> updateTask(Long id, Task updatedTask) {
-        return taskRepository.findById(id).map(task -> {
+    public Task updateTask(Long id, Task updatedTask) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
             task.setTitle(updatedTask.getTitle());
             task.setDescription(updatedTask.getDescription());
             task.setCompleted(updatedTask.isCompleted());
             return taskRepository.save(task);
-        });
     }
 
-    public boolean deleteTask(Long id) {
-        return taskRepository.findById(id).map(task -> {
+    public void deleteTask(Long id) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
             taskRepository.delete(task);
-            return true;
-        }).orElse(false);
     }
 
     public List<Task> getTasksByCompletionStatus(boolean status) {
