@@ -23,3 +23,15 @@ spring:
         console:
             enabled: true
             path: /h2-console
+
+# Actuator Configuration
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health, info, metrics, env, logger, beans, mappings
+            base-path: /actuator
+    
+    health:
+        show-details: always
+        

@@ -20,12 +20,6 @@ spring:
             ddl-auto: update
         show-sql: true
 
-    # H2 Console Configuration
-    h2:
-        console:
-            enabled: true
-            path: /h2-console
-
 # App info
 app:
     name: Task Manager
