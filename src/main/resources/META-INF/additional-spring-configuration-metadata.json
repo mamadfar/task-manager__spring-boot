@@ -5,6 +5,24 @@
       "type": "java.lang.String",
       "description": "Version segment of the public API path. Override with the API_VERSION environment variable.",
       "defaultValue": "v1"
+    },
+    {
+      "name": "app.name",
+      "type": "java.lang.String",
+      "description": "Display name of the application.",
+      "defaultValue": "Task Manager"
+    },
+    {
+      "name": "app.version",
+      "type": "java.lang.String",
+      "description": "Application version shown as app info.",
+      "defaultValue": "1.0.0"
+    },
+    {
+      "name": "app.max-tasks-per-page",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of tasks returned on one page.",
+      "defaultValue": 10
     }
   ]
 }

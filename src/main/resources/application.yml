@@ -23,3 +23,12 @@ spring:
         console:
             enabled: true
             path: /h2-console
+
+# App info
+app:
+    name: Task Manager
+    version: 1.0.0
+    max-tasks-per-page: 10
+
+api:
+    version: v1
