@@ -3,6 +3,8 @@
 spring:
     application:
         name: taskmanager
+    profiles:
+        active: dev
 
     # Database Configuration
     datasource:
