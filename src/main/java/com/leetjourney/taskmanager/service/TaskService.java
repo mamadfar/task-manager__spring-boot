@@ -1,7 +1,6 @@
 package com.leetjourney.taskmanager.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +27,18 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
+    public Page<Task> searchTasksByTitle(String title, Pageable pageable) {
+        return taskRepository.findByTitleContainingIgnoreCase(title, pageable);
+    }
+
+    public Page<Task> searchTasksByTitleAndCompletionStatus(String title, Boolean completed, Pageable pageable) {
+        return taskRepository.findByTitleContainingAndCompleted(title, completed, pageable);
+    }
+
+    public Page<Task> getTasksByCompletionStatus(Boolean completed, Pageable pageable) {
+        return taskRepository.findByCompleted(completed, pageable);
+    }
+    
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
