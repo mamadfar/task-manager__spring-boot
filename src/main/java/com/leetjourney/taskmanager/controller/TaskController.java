@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.leetjourney.taskmanager.dto.CategoryResponse;
 import com.leetjourney.taskmanager.dto.TaskRequest;
 import com.leetjourney.taskmanager.dto.TaskResponse;
 import com.leetjourney.taskmanager.entity.Task;
@@ -60,7 +61,12 @@ public class TaskController {
                 task.getTitle(),
                 task.getDescription(),
                 task.getCompleted(),
-                task.getCreatedAt()
+                task.getCreatedAt(),
+                new CategoryResponse(
+                    task.getCategory().getId(),
+                    task.getCategory().getName(),
+                    task.getCategory().getDescription()
+                )
             ))
             .toList();
 
@@ -139,7 +145,12 @@ public class TaskController {
             task.getTitle(),
             task.getDescription(),
             task.getCompleted(),
-            task.getCreatedAt()
+            task.getCreatedAt(),
+            new CategoryResponse(
+                task.getCategory().getId(),
+                task.getCategory().getName(),
+                task.getCategory().getDescription()
+            )
         ))
         .toList();
 
