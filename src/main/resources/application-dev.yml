@@ -34,4 +34,12 @@ management:
     
     health:
         show-details: always
+    info:
+        env:
+            enabled: true
+info:
+    app:
+        description: "Task Manager CRUD API"
+        version: "1.0.0"
+        author: "Mohammad Farhadi"
         
